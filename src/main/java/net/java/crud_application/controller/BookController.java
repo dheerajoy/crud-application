@@ -3,6 +3,8 @@ package net.java.crud_application.controller;
 
 import net.java.crud_application.model.Book;
 import net.java.crud_application.repo.BookRepo;
+import net.java.crud_application.service.BookService;
+import net.java.crud_application.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,17 +21,22 @@ public class BookController {
     @Autowired
     private BookRepo bookRepo;
 
-    @GetMapping("/getAllBooks")
-    public ResponseEntity<List<Book>> getAllBooks(){
-        try {
-            List<Book> bookList = new ArrayList<>();
-            bookRepo.findAll().forEach(bookList::add);
+    @Autowired
+    private BookService bookService;
 
-            if(bookList.isEmpty()){
+    @Autowired
+    private ResponseUtil responseUtil;
+
+    @GetMapping("/getAllBooks")
+    public ResponseEntity<Object> getAllBooks(){
+        try {
+            List<Book> books = bookService.getAllBooks();
+
+            if(books.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            return new ResponseEntity<>(bookList, HttpStatus.OK);
+            return responseUtil.customSuccessResponse(books);
         }catch(Exception ex){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
