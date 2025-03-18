@@ -10,7 +10,7 @@ import java.util.Map;
 @Component
 public class ResponseUtil {
 
-    public ResponseEntity<Object> customSuccessResponse(Object data){
+    public ResponseEntity<Map<String, Object>> customSuccessResponse(Object data){
         Map<String, Object> response = new HashMap<>();
         response.put("Success", true);
         response.put("Message", "Data fetched Successfully");
@@ -19,16 +19,14 @@ public class ResponseUtil {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> customFailureResponse(String message){
+    public ResponseEntity<Map<String, Object>> customFailureResponse(String message){
         Map<String, Object> response = new HashMap<>();
-
         response.put("Success", false);
         response.put("message", message);
-        response.put("data", new Object());
+        response.put("data", new HashMap<>());  // empty map instead of Object
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
 
     public Map<String, Object> createDataResponse(Object data){
         Map<String, Object> dataResponse = new HashMap<>();

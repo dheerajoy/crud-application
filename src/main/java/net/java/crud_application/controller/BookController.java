@@ -1,18 +1,16 @@
 package net.java.crud_application.controller;
 
-
 import net.java.crud_application.model.Book;
 import net.java.crud_application.repo.BookRepo;
 import net.java.crud_application.service.BookService;
 import net.java.crud_application.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,17 +26,17 @@ public class BookController {
     private ResponseUtil responseUtil;
 
     @GetMapping("/getAllBooks")
-    public ResponseEntity<Object> getAllBooks(){
+    public ResponseEntity<Map<String, Object>> getAllBooks(){
         try {
             List<Book> books = bookService.getAllBooks();
 
             if(books.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return responseUtil.customFailureResponse("No data available");
             }
 
             return responseUtil.customSuccessResponse(books);
-        }catch(Exception ex){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch(Exception ex){
+            return responseUtil.customFailureResponse(ex.getMessage());
         }
     }
 
@@ -72,8 +70,7 @@ public class BookController {
             updatedBookData.setAuthor(newBookData.getAuthor());
             updatedBookData.setTitle(newBookData.getTitle());
 
-
-           Book bookObj =  bookRepo.save(updatedBookData);
+            Book bookObj =  bookRepo.save(updatedBookData);
             return new ResponseEntity<>(bookObj, HttpStatus.OK);
         }
 
